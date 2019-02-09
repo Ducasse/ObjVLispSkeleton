@@ -626,7 +626,7 @@ ObjTest >> testPrimitiveStructure [
 { #category : #'step1-tests-structure of objects' }
 ObjTest >> testPrimitiveStructureObjClassId [
 	"(self selector: #testPrimitiveStructureObjClassId) run"
-	self halt.
+	
 	self assert: (pointClass objClassId = #ObjClass).
 
 ]
