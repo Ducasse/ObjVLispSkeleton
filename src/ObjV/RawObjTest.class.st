@@ -215,7 +215,7 @@ RawObjTest >> setUp [
 RawObjTest >> testClassAccess [
 	"(self  selector: #testClassAccess) run"
 	
-	self assert: (aPoint objClass = pointClass)
+	self assert: aPoint objClass equals: pointClass
 ]
 
 { #category : #'step1-tests-structure of objects' }
@@ -238,7 +238,7 @@ RawObjTest >> testPrimitiveStructureObjClassIdForSimpleObject [
 RawObjTest >> testPrimitiveStructureObjIVs [
 	"(self selector: #testPrimitiveStructureObjIVs) run"
 
-	self assert: (pointClass objIVs) equals: #(#class #x #y)
+	self assert: pointClass objIVs equals: #(#class #x #y)
 
 ]
 
@@ -246,8 +246,7 @@ RawObjTest >> testPrimitiveStructureObjIVs [
 RawObjTest >> testPrimitiveStructureObjKeywords [
 	"(self selector: #testPrimitiveStructureObjKeywords) run"
 
-	self assert: (pointClass objKeywords) equals: #(#x: #y:).
-
+	self assert: pointClass objKeywords equals: #( #x: #y: )
 ]
 
 { #category : #'step2-tests-structure of classes' }
@@ -261,14 +260,12 @@ RawObjTest >> testPrimitiveStructureObjMethodDict [
 RawObjTest >> testPrimitiveStructureObjName [
 	"(self selector: #testPrimitiveStructureObjName) run"
 
-	self assert: (pointClass objName ) equals: #ObjPoint
-	
+	self assert: pointClass objName equals: #ObjPoint
 ]
 
 { #category : #'step2-tests-structure of classes' }
 RawObjTest >> testPrimitiveStructureObjSuperclassId [
 	"(self selector: #testPrimitiveStructureObjSuperclassId) run"
 
-	self assert: (pointClass objSuperclassId ) equals: #ObjObject
-
+	self assert: pointClass objSuperclassId equals: #ObjObject
 ]
