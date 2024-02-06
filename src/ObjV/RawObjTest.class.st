@@ -222,7 +222,7 @@ RawObjTest >> testClassAccess [
 RawObjTest >> testPrimitiveStructureObjClassId [
 	"(self selector: #testPrimitiveStructureObjClassId) run"
 
-	self assert: (pointClass objClassId = #ObjClass).
+	self assert: pointClass objClassId equals: #ObjClass
 
 ]
 
@@ -230,7 +230,7 @@ RawObjTest >> testPrimitiveStructureObjClassId [
 RawObjTest >> testPrimitiveStructureObjClassIdForSimpleObject [
 	"self run: #testPrimitiveStructureObjClassIdForSimpleObject"
 
-	self assert: (aPoint objClassId = #ObjPoint).
+	self assert: aPoint objClassId equals: #ObjPoint
 
 ]
 
@@ -238,7 +238,7 @@ RawObjTest >> testPrimitiveStructureObjClassIdForSimpleObject [
 RawObjTest >> testPrimitiveStructureObjIVs [
 	"(self selector: #testPrimitiveStructureObjIVs) run"
 
-	self assert: ((pointClass objIVs) = #(#class #x #y)).
+	self assert: (pointClass objIVs) equals: #(#class #x #y)
 
 ]
 
@@ -246,7 +246,7 @@ RawObjTest >> testPrimitiveStructureObjIVs [
 RawObjTest >> testPrimitiveStructureObjKeywords [
 	"(self selector: #testPrimitiveStructureObjKeywords) run"
 
-	self assert: ((pointClass objKeywords) = #(#x: #y:)).
+	self assert: (pointClass objKeywords) equals: #(#x: #y:).
 
 ]
 
@@ -261,7 +261,7 @@ RawObjTest >> testPrimitiveStructureObjMethodDict [
 RawObjTest >> testPrimitiveStructureObjName [
 	"(self selector: #testPrimitiveStructureObjName) run"
 
-	self assert: ((pointClass objName ) = #ObjPoint).
+	self assert: (pointClass objName ) equals: #ObjPoint
 	
 ]
 
@@ -269,6 +269,6 @@ RawObjTest >> testPrimitiveStructureObjName [
 RawObjTest >> testPrimitiveStructureObjSuperclassId [
 	"(self selector: #testPrimitiveStructureObjSuperclassId) run"
 
-	self assert: ((pointClass objSuperclassId ) = #ObjObject).
+	self assert: (pointClass objSuperclassId ) equals: #ObjObject
 
 ]
