@@ -342,14 +342,6 @@ Obj >> bodyOfMethod: aSelector [
 	^ self
 ]
 
-{ #category : #debugging }
-Obj >> classDebug [
-	"(self giveClassNamed: #ObjClass) classDebug"
-	"(self giveClassNamed: #ObjSet) classDebug"
-
-	ObjClassInspector basicInspect: self
-]
-
 { #category : #'keyword management' }
 Obj >> computeAndSetKeywords [
 	"Compute the keywords of a given class.  As the class of an object should not be changed.
