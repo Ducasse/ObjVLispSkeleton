@@ -604,13 +604,6 @@ Obj >> offsetFromObjectOfInstanceVariable: aSymbol [
 	^ self
 ]
 
-{ #category : #printing }
-Obj >> printOn: aStream [
-
-	aStream nextPutAll: 'an Obj object: '.	
-	super printOn: aStream
-]
-
 { #category : #'method management' }
 Obj >> removeMethod: aSelector [
 	"Remove the method with aSelector <aSymbol> in the receiver. 
