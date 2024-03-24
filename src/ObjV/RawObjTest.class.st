@@ -58,16 +58,16 @@ RawObjTest >> assembleColoredPointClass [
 
 	(coloredPointClass at: coloredPointClass offsetForMethodDict) at: #foo
 		put: 
-			([ :superClassOfClassDefiningTheMethod | 
+			([ :superclassOfClassDefiningTheMethod | 
 				[:objself | 
-				(objself super: #foo withArguments:#() from: superClassOfClassDefiningTheMethod) + (objself super: #foo withArguments:#() from: superClassOfClassDefiningTheMethod)
+				(objself super: #foo withArguments:#() from: superclassOfClassDefiningTheMethod) + (objself super: #foo withArguments:#() from: superclassOfClassDefiningTheMethod)
 				]] value: pointClass).
 
 	(coloredPointClass at: coloredPointClass offsetForMethodDict) at: #bar
 		put: 
-			([ :superClassOfClassDefiningTheMethod | 
+			([ :superclassOfClassDefiningTheMethod | 
 				[:objself | 
-				(objself super: #bar withArguments:#() from: superClassOfClassDefiningTheMethod) + (objself super: #bar withArguments:#() from: superClassOfClassDefiningTheMethod)]
+				(objself super: #bar withArguments:#() from: superclassOfClassDefiningTheMethod) + (objself super: #bar withArguments:#() from: superclassOfClassDefiningTheMethod)]
 			] value: pointClass).
 ]
 
@@ -121,7 +121,7 @@ RawObjTest >> assembleObjectClass [
 	objectClass at: 1 put: #ObjClass.
 	objectClass at: objectClass offsetForIVs put: #(#class).
 	objectClass at: objectClass offsetForKeywords put: #().
-	objectClass at: objectClass offsetForSuperclass put: nil.
+	objectClass at: objectClass offsetForSuperclassId put: nil.
 	objectClass at: objectClass offsetForMethodDict put: (IdentityDictionary new).
 	Obj declareClass: objectClass.
 
@@ -149,7 +149,7 @@ RawObjTest >> assembleObjectClass [
 	(objectClass at: objectClass offsetForMethodDict) at: #setIV
 		put: 
 			([:superClassOfClassDefiningTheMethod | [:object :iv :val | 
-			object at: (object offsetFromObjectOfInstanceVariable: iv) put: val]] value: nil).
+			object at: (object ivOffset: iv) put: val]] value: nil).
 
 	(objectClass at: objectClass offsetForMethodDict) at: #bar
 		put: 
@@ -246,7 +246,8 @@ RawObjTest >> testPrimitiveStructureObjIVs [
 RawObjTest >> testPrimitiveStructureObjKeywords [
 	"(self selector: #testPrimitiveStructureObjKeywords) run"
 
-	self assert: pointClass objKeywords equals: #( #x: #y: )
+	self assert: pointClass objKeywords equals: #(#x: #y:)
+
 ]
 
 { #category : #'step2-tests-structure of classes' }
@@ -261,6 +262,7 @@ RawObjTest >> testPrimitiveStructureObjName [
 	"(self selector: #testPrimitiveStructureObjName) run"
 
 	self assert: pointClass objName equals: #ObjPoint
+	
 ]
 
 { #category : #'step2-tests-structure of classes' }
@@ -268,4 +270,5 @@ RawObjTest >> testPrimitiveStructureObjSuperclassId [
 	"(self selector: #testPrimitiveStructureObjSuperclassId) run"
 
 	self assert: pointClass objSuperclassId equals: #ObjObject
+
 ]

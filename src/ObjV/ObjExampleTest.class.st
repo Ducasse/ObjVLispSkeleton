@@ -18,7 +18,7 @@ ObjExampleTest class >> setMetaclassDefinition [
 		args: 'initArray'
 		withBody: 
 			'
-			objself binarySuper: #initialize with: initArray from: superClassOfClassDefiningTheMethod.
+			objself binarySuper: #initialize with: initArray from: superclassOfClassDefiningTheMethod.
 			objself send: #setIV
 				withArguments: (Array with: #myInstances with: OrderedCollection new).
 			objself'.
@@ -30,7 +30,7 @@ ObjExampleTest class >> setMetaclassDefinition [
 		args: 'initArray'
 		withBody: 
 			'| newInst others |
-			newInst := objself super: #new withArguments: (Array with: initArray) from: superClassOfClassDefiningTheMethod.
+			newInst := objself super: #new withArguments: (Array with: initArray) from: superclassOfClassDefiningTheMethod.
 			others := objself unarySend: #instances.
 			others := others add: newInst;
 						yourself.
@@ -73,7 +73,7 @@ ObjExampleTest >> defineObjAbstractPoint [
 		withArguments: #(#(#name: #ObjAbstractPoint #iv: #() #superclass: #ObjObject)).
 	Obj ObjAbstractPoint
 		addUnaryMethod: #givex
-		withBody: 'objself  valueOfInstanceVariable: #x '.
+		withBody: 'objself valueOfInstanceVariable: #x '.
 	Obj ObjAbstractPoint 
 		addUnaryMethod: #display
 		withBody: 
@@ -115,7 +115,7 @@ ObjExampleTest >> testAbstractMetaclassExampleWithConcreteSubclass [
 ObjExampleTest >> testColoredPoint [
 
 	| coloredPointClass aColoredPoint |
-	coloredPointClass := (Obj ObjClass)
+	coloredPointClass := Obj ObjClass
 						 	send: #new 
 							withArguments: #((#name: #ObjColoredPoint 
 							           		   #iv: #(#color) 
@@ -124,11 +124,16 @@ ObjExampleTest >> testColoredPoint [
 	aColoredPoint := coloredPointClass send: #new withArguments: #((#x: 24 #y: 6 #color: #blue)).	
 	"first messages sent"
 
-	self assert: (aColoredPoint send: #getIV withArguments: #(#x)) = 24.
+	self 
+		assert: (aColoredPoint send: #getIV withArguments: #(#x)) 
+		equals: 24.
 	aColoredPoint send: #setIV withArguments: #(#x 25).
-	self assert: (aColoredPoint send: #getIV withArguments: #(#x)) = 25.
+	self assert: (aColoredPoint send: #getIV withArguments: #(#x)) 
+		equals: 25.
 
-	self assert: (aColoredPoint send: #getIV withArguments: #(#color)) = #blue.	
+	self 
+		assert: (aColoredPoint send: #getIV withArguments: #(#color)) 
+		equals: #blue.	
 
 	"adding some methods"
 
@@ -143,14 +148,18 @@ ObjExampleTest >> testColoredPoint [
 
 	coloredPointClass addUnaryMethod: #display
 		withBody:  
-			'objself super: #display withArguments: #() from: superClassOfClassDefiningTheMethod.
+			'objself super: #display withArguments: #() from: superclassOfClassDefiningTheMethod.
 			Transcript cr;
 				show: '' with Color = ''.
 			Transcript show: (objself send: #giveColor withArguments: #()) printString;
 				cr'.
-	self assert: (aColoredPoint send: #giveColor withArguments: #()) = #blue.
+	self 
+		assert: (aColoredPoint send: #giveColor withArguments: #()) 
+		equals: #blue.
 	
-	self assert: (aColoredPoint send: #givex withArguments: #()) = 25.
+	self 
+		assert: (aColoredPoint send: #givex withArguments: #()) 
+		equals: 25.
 	
 	aColoredPoint send: #display withArguments: #().
 ]

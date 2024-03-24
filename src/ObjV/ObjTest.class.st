@@ -18,12 +18,12 @@ Class {
 ObjTest >> assembleClassClass [
 	classClass := Obj new: 6.
 	classClass at: classClass offsetForName put: #ObjClass.
-	classClass at: classClass offsetForClass put: #ObjClass.
+	classClass at: classClass offsetForClassId put: #ObjClass.
 	classClass at: classClass offsetForIVs
 		put: #(#class #name #superclass #iv #keywords #methodDict).
 	classClass at: classClass offsetForKeywords
 		put: #(#name: #superclass: #iv: #keywords: #methodDict:).
-	classClass at: classClass offsetForSuperclass put: #ObjObject.
+	classClass at: classClass offsetForSuperclassId put: #ObjObject.
 	classClass at: classClass offsetForMethodDict
 		put: (IdentityDictionary new).
 	Obj declareClass: classClass
@@ -42,27 +42,27 @@ ObjTest >> assembleColoredInstance [
 ObjTest >> assembleColoredPointClass [
 	coloredPointClass := Obj new: 6.
 	coloredPointClass at: pointClass offsetForName put: #ObjColoredPoint.
-	coloredPointClass at: pointClass offsetForClass put: #ObjClass.
+	coloredPointClass at: pointClass offsetForClassId put: #ObjClass.
 	
 	"Here the initialize of metaclass is not available so we perform the instance variable lookup by hand."
 	coloredPointClass at: pointClass offsetForIVs put: #( #class #x #y #color).
-	coloredPointClass at: pointClass offsetForSuperclass put: #ObjPoint.
+	coloredPointClass at: pointClass offsetForSuperclassId put: #ObjPoint.
 	coloredPointClass at: pointClass offsetForMethodDict
 		put: (IdentityDictionary new).
 	Obj declareClass: coloredPointClass.
 
 	(coloredPointClass at: coloredPointClass offsetForMethodDict) at: #print
 		put: 
-			([ :superClassOfClassDefiningTheMethod | 
+			([ :superclassOfClassDefiningTheMethod | 
 				[:objself | 
 				Transcript show: 'I''am a colored point';
 				cr]] value: pointClass).
 
 	(coloredPointClass at: coloredPointClass offsetForMethodDict) at: #foo
 		put: 
-			([ :superClassOfClassDefiningTheMethod | 
+			([ :superclassOfClassDefiningTheMethod | 
 				[:objself | 
-				(objself super: #foo withArguments: #() from: superClassOfClassDefiningTheMethod) + (objself super: #foo withArguments: #() from: superClassOfClassDefiningTheMethod)
+				(objself super: #foo withArguments: #() from: superclassOfClassDefiningTheMethod) + (objself super: #foo withArguments: #() from: superclassOfClassDefiningTheMethod)
 				]] value: pointClass).
 
 	(coloredPointClass at: coloredPointClass offsetForMethodDict) at: #bar
@@ -87,11 +87,11 @@ ObjTest >> assembleIncrementalColoredInstance [
 ObjTest >> assembleIncrementalColoredPointClass [
 	incrementalColoredPointClass := Obj new: 6.
 	incrementalColoredPointClass at: pointClass offsetForName put: #ObjIncrementalColoredPoint.
-	incrementalColoredPointClass at: pointClass offsetForClass put: #ObjClass.
+	incrementalColoredPointClass at: pointClass offsetForClassId put: #ObjClass.
 	
 	"Some tests will invoke by hand computeIV... so we do not have to hardcode the sequence."
 	incrementalColoredPointClass at: pointClass offsetForIVs put: #( #color).
-	incrementalColoredPointClass at: pointClass offsetForSuperclass put: #ObjPoint.
+	incrementalColoredPointClass at: pointClass offsetForSuperclassId put: #ObjPoint.
 	incrementalColoredPointClass at: pointClass offsetForMethodDict
 		put: (IdentityDictionary new).
 	Obj declareClass: incrementalColoredPointClass.
@@ -122,10 +122,10 @@ ObjTest >> assembleIncrementalColoredPointClass [
 ObjTest >> assembleObjectClass [
 	objectClass := Obj new: 6.
 	objectClass at: objectClass offsetForName put: #ObjObject.
-	objectClass at: objectClass offsetForClass put: #ObjClass.
+	objectClass at: objectClass offsetForClassId put: #ObjClass.
 	objectClass at: objectClass offsetForIVs put: #(#class).
 	objectClass at: objectClass offsetForKeywords put: #().
-	objectClass at: objectClass offsetForSuperclass put: nil.
+	objectClass at: objectClass offsetForSuperclassId put: nil.
 	objectClass at: objectClass offsetForMethodDict put: (IdentityDictionary new).
 	Obj declareClass: objectClass.
 
@@ -134,30 +134,30 @@ ObjTest >> assembleObjectClass [
 
 	(objectClass at: objectClass offsetForMethodDict) at: #print
 		put: 
-			([:superClassOfClassDefiningTheMethod |
+			([:superclassOfClassDefiningTheMethod |
 				[:objself | 
 			Transcript show: 'I''am an Object';
 				cr]] value: nil).
 
 	(objectClass at: objectClass offsetForMethodDict) at: #error
 		put: 
-			([:superClassOfClassDefiningTheMethod |
+			([:superclassOfClassDefiningTheMethod |
 				[:object :arrayOfArguments | 
 			Transcript show: 'Error: selector ' , arrayOfArguments first printString , ' not understood';
 				cr.
 				Error signal]] value: nil).
 
 	(objectClass at: objectClass offsetForMethodDict) at: #getIV
-		put: ([:superClassOfClassDefiningTheMethod | [:object :iv | object valueOfInstanceVariable: iv]] value: nil).
+		put: ([:superclassOfClassDefiningTheMethod | [:object :iv | object valueOfInstanceVariable: iv]] value: nil).
 
 	(objectClass at: objectClass offsetForMethodDict) at: #setIV
 		put: 
-			([:superClassOfClassDefiningTheMethod | [:object :iv :val | 
-			object at: (object offsetFromObjectOfInstanceVariable: iv) put: val]] value: nil).
+			([:superclassOfClassDefiningTheMethod | [:object :iv :val | 
+			object at: (object ivOffset: iv) put: val]] value: nil).
 
 	(objectClass at: objectClass offsetForMethodDict) at: #bar
 		put: 
-			([:superClassOfClassDefiningTheMethod | [:objself | 
+			([:superclassOfClassDefiningTheMethod | [:objself | 
 					5]] value: nil).
 ]
 
@@ -167,10 +167,10 @@ ObjTest >> assemblePointClass [
 	cl := Obj giveClassNamed: #ObjClass.
 	pointClass := Obj new: (cl at: cl offsetForIVs) size.
 	pointClass at: pointClass offsetForName put: #ObjPoint.
-	pointClass at: pointClass offsetForClass put: #ObjClass.
+	pointClass at: pointClass offsetForClassId put: #ObjClass.
 	pointClass at: pointClass offsetForIVs put: #(#class #x #y).
 	pointClass at: pointClass offsetForKeywords put: #(#x: #y:).
-	pointClass at: pointClass offsetForSuperclass put: #ObjObject.
+	pointClass at: pointClass offsetForSuperclassId put: #ObjObject.
 	pointClass at: pointClass offsetForMethodDict
 		put: (IdentityDictionary new).
 	Obj declareClass: pointClass.
@@ -216,7 +216,7 @@ ObjTest >> setUp [
 	self assembleIncrementalColoredPointClass
 ]
 
-{ #category : #'step5-tests-allocate' }
+{ #category : #'step05-tests-allocate' }
 ObjTest >> testAllocate [
   "(self  selector: #testAllocate) run"
   | newInstance |
@@ -242,27 +242,27 @@ ObjTest >> testBlockBodyFromHeaderAndBody [
 	"a method with one argument: val"
 	self assert: (Obj new stringOfBlockBodyFromHeader: 'val' andBody: 'objself send: #setIV 
 										 withArguments: (Array with: #x with: val).')
-										= '[ :superClassOfClassDefiningTheMethod |
+										= '[ :superclassOfClassDefiningTheMethod |
 		[ :objself :val |
 					 objself send: #setIV 
 										 withArguments: (Array with: #x with: val).] ]'.
 
 	"a method without arg"
 	self assert: (Obj new stringOfBlockBodyFromHeader: '' andBody: 'objself unarySend: #getx.') 
-	='[ :superClassOfClassDefiningTheMethod |
+	='[ :superclassOfClassDefiningTheMethod |
 		[ :objself  |
 					 objself unarySend: #getx.] ]'
 	
 ]
 
-{ #category : #'step3-tests-class access' }
+{ #category : #'step03-tests-class access' }
 ObjTest >> testClassAccess [
 	"(self  selector: #testClassAccess) run"
 	
-	self assert: (aPoint objClass = pointClass)
+	self assert: aPoint objClass equals: pointClass
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testErrorRaisedSendWhenErrorInLookup [
 	"(self  selector: #testErrorRaisedSendWhenErrorInLookup) run"
 	
@@ -270,40 +270,47 @@ ObjTest >> testErrorRaisedSendWhenErrorInLookup [
 	"Open a Transcript to see the message trace"
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testErrorRedefinition [
 	"(self  run: #testErrorRedefinition)"
 	
 	self should: [aPoint send: #zork withArguments: #()] raise: Error.
 
 	(pointClass at: pointClass offsetForMethodDict) at: #error
-		put: ([ :superClassOfClassDefiningTheMethod | [:objself :selector | 33]] value: objectClass).
+		put: ([ :superclassOfClassDefiningTheMethod | [:objself :selector | 33]] value: objectClass).
 	
 	self assert: (aPoint send: #zork withArguments: #()) = 33.
 
 	(pointClass at: pointClass offsetForMethodDict) at: #error
-		put: ([ :superClassOfClassDefiningTheMethod | [:objself :selector | 33]] value: objectClass).
+		put: ([ :superclassOfClassDefiningTheMethod | [:objself :selector | 33]] value: objectClass).
 
 	self assert: (aPoint send: #zork withArguments: #(44)) = 33.
 ]
 
-{ #category : #'step4-tests-iv management' }
-ObjTest >> testIVOffset [
-	"(self  selector: #testIVOffset) run"
+{ #category : #'step04-tests-iv management' }
+ObjTest >> testIVOffsetAskingTheClass [
+	"(self  selector: #testIVOffsetAskingTheClass) run"
 
-	self assert: ((pointClass offsetFromClassOfInstanceVariable: #x ) = 2).
-	self assert: ((pointClass offsetFromClassOfInstanceVariable: #lulu ) = 0)
+	self assert: ((pointClass ivClassOffset: #x ) = 2).
+	self assert: ((pointClass ivClassOffset: #lulu ) = 0)
 ]
 
-{ #category : #'step4-tests-iv management' }
-ObjTest >> testIVOffsetAndValue [
+{ #category : #'step04-tests-iv management' }
+ObjTest >> testIVOffsetAskingTheInstance [
+	"(self  selector: #testIVOffsetAskingTheInstance) run"
+
+	self assert: (pointClass ivClassOffset: #x) equals: 2.
+	self assert: (pointClass ivClassOffset: #lulu) equals: 0
+]
+
+{ #category : #'step04-tests-iv management' }
+ObjTest >> testIVValue [
 	"(self  selector: #testIVOffsetAndValue) run"
 
-	self assert: ((aPoint offsetFromObjectOfInstanceVariable: #x ) = 2).
-	self assert: ((aPoint valueOfInstanceVariable: #x ) = 10)
+	self assert: (aPoint valueOfInstanceVariable: #x) equals: 10
 ]
 
-{ #category : #'step7-tests-initialize' }
+{ #category : #'step07-tests-initialize' }
 ObjTest >> testInitialize [
 	"(self  selector: #testInitialize) run"
 
@@ -315,71 +322,72 @@ ObjTest >> testInitialize [
 	self assert: (newInstance at: 3) equals: 2.
 ]
 
-{ #category : #'step8-tests-instance variable inheritance' }
+{ #category : #'step08-tests-instance variable inheritance' }
 ObjTest >> testInstanceVariableInheritance [
 	"(self  selector: #testInstanceVariableInheritance) run"
 
 	"a better choice would be to throw an exception if there are duplicates"
+	self 
+		assert: 
+			(Obj new computeNewIVFrom: #(#a #b #c #d)
+				with: #(#a #z #b #t))
+				equals: #(#a #b #c #d #z #t).
 	self assert: 
-			((Obj new computeNewIVFrom: #(#a #b #c #d) asOrderedCollection
-				with: #(#a #z #b #t) asOrderedCollection)
-					= #(#a #b #c #d #z #t) asOrderedCollection).
-	self assert: 
-			((Obj new computeNewIVFrom: #() asOrderedCollection
-				with: #(#a #z #b #t) asOrderedCollection)
-					= #(#a #z #b #t) asOrderedCollection)
+			(Obj new computeNewIVFrom: #()
+				with: #(#a #z #b #t))
+			equals: #(#a #z #b #t)
 ]
 
-{ #category : #'tests-StaticInheritanceOfInstanceVariables' }
+{ #category : #'step08-tests-instance variable inheritance' }
 ObjTest >> testInstanceVariableInheritanceFromAClass [
 
 	"(self  selector: #testInstanceVariableInheritanceFromAClass) run"
 	
-	aIncrementalColoredPoint objClass objIVs: (aIncrementalColoredPoint computeNewIVFrom: aPoint objClass objIVs  with: aIncrementalColoredPoint objClass objIVs).
+	aIncrementalColoredPoint objClass 
+		objIVs: (aIncrementalColoredPoint 
+							computeNewIVFrom: aPoint objClass objIVs  
+							with: aIncrementalColoredPoint objClass objIVs).
 	
-	self assert: ((pointClass offsetFromClassOfInstanceVariable: #x ) = 2).
-	self assert: ((incrementalColoredPointClass offsetFromClassOfInstanceVariable: #x ) = 2).
+	self assert: (pointClass ivClassOffset: #x) equals: 2.
+	self assert: (incrementalColoredPointClass ivClassOffset: #x) equals: 2.
 	
 
 ]
 
-{ #category : #'tests-StaticInheritanceOfInstanceVariables' }
+{ #category : #'step08-tests-instance variable inheritance' }
 ObjTest >> testInstanceVariableInheritanceFromAObject [
-
-	"(self  selector: #testInstanceVariableInheritanceFromAObject) run"
 	
-	aIncrementalColoredPoint objClass objIVs: (aIncrementalColoredPoint computeNewIVFrom: aPoint objClass objIVs  with: aIncrementalColoredPoint objClass objIVs).
+	aIncrementalColoredPoint objClass 
+			objIVs: (aIncrementalColoredPoint 
+								computeNewIVFrom: aPoint objClass objIVs  
+								with: aIncrementalColoredPoint objClass objIVs).
 	
-	self assert: ((aPoint offsetFromObjectOfInstanceVariable: #x ) = 2).
-	self assert: ((aIncrementalColoredPoint offsetFromObjectOfInstanceVariable: #x ) = 2).
+	self assert: (aPoint ivOffset: #x) equals: 2.
+	self assert: (aIncrementalColoredPoint ivOffset: #x) equals: 2.
 	
 	
 	
 ]
 
-{ #category : #'tests-StaticInheritanceOfInstanceVariables' }
+{ #category : #'step08-tests-instance variable inheritance' }
 ObjTest >> testInstanceVariableInheritanceNotFind [
 
-	"(self  selector: #testInstanceVariableInheritanceNotFind) run"
-	
-	self should: [aPoint offsetFromObjectOfInstanceVariable: #zork ] raise: Error.
+	self should: [aPoint ivOffset: #zork ] raise: Error.
 	
 	
 	
 ]
 
-{ #category : #'tests-StaticInheritanceOfInstanceVariables' }
+{ #category : #'step08-tests-instance variable inheritance' }
 ObjTest >> testInstanceVariableInheritanceNumberOfInstanceVar [
 
-	"(self  selector: #testInstanceVariableInheritanceNumberOfInstanceVar) run"
-	
-	self assert: ((pointClass numberOfIVs ) = 3).
-	self assert: ((coloredPointClass numberOfIVs ) = 4).
+	self assert: (pointClass numberOfIVs) equals: 3.
+	self assert: (coloredPointClass numberOfIVs) equals: 4.
 	
 
 ]
 
-{ #category : #'step6-tests-keywords' }
+{ #category : #'step06-tests-keywords' }
 ObjTest >> testKeywords [
 	"(self  selector: #testKeywords) run"
 
@@ -401,7 +409,7 @@ ObjTest >> testKeywords [
 				= #(35 nil 22 35))
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodDefinition [
 	"(self  selector: #testMethodManagment) run"
 
@@ -426,28 +434,28 @@ ObjTest >> testMethodDefinition [
 	self assert: (((pointClass bodyOfMethod: #getgetx) value: aPoint) = 10).
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodLookup [
 	"(self  selector: #testMethodLookup) run"
 	
 	self assert: ((pointClass lookup: #x) isKindOf: BlockClosure)
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testMethodLookupFindSimpleMethod [
 	"(self  selector: #testMethodLookupFindSimpleMethod) run"
 
 	self assert: ((pointClass lookup: #x)  isKindOf: BlockClosure)
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testMethodLookupFindSuperMethod [
 	"(self  selector: #testMethodLookupFindSuperMethod) run"
 	
 	self assert: ((coloredPointClass lookup: #x) isKindOf: BlockClosure)
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testMethodLookupStop [
 	"(self  selector: #testMethodLookupStop) run"
 	
@@ -466,7 +474,7 @@ ObjTest >> testMethodLookupStop [
 	self should:  [((pointClass lookup: #zork) value: 'r' value: #e)] raise: Error .
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodManagement [
 	"(self  selector: #testMethodManagment) run"
 
@@ -484,38 +492,37 @@ ObjTest >> testMethodManagement [
 	self assert: (((pointClass bodyOfMethod: #x) value: aPoint) = 10)
 ]
 
-{ #category : #'tests-MethodsManagement' }
+{ #category : #'step09-tests-methods-management' }
 ObjTest >> testMethodManagmentAddRemoveMethods [
 	"(self  selector: #testMethodManagmentAddRemoveMethods) run"
 
 	pointClass 
-		addMethod: #xx
-		args: ''
+		addUnaryMethod: #xx
 		withBody: 'objself valueOfInstanceVariable: #x '.
-	self assert: (((pointClass bodyOfMethod: #xx) value: aPoint) = 10).
+	self assert: ((pointClass bodyOfMethod: #xx) value: aPoint) equals: 10.
 	self assert: (pointClass doesUnderstand: #xx).
 	pointClass removeMethod: #xx.
 	self assert: (pointClass doesUnderstand: #xx) not.
-	self assert: (((pointClass bodyOfMethod: #x) value: aPoint) = 10)
+	self assert: ((pointClass bodyOfMethod: #x) value: aPoint) equals: 10
 ]
 
-{ #category : #'tests-MethodsManagement' }
+{ #category : #'step09-tests-methods-management' }
 ObjTest >> testMethodManagmentBodyOfMethod [
-	"(self  selector: #testMethodManagmentBodyOfMethod) run"
+	"(self selector: #testMethodManagmentBodyOfMethod) run"
 	
-	self assert: (((pointClass bodyOfMethod: #x) value: aPoint) = 10)
+	self assert: ((pointClass bodyOfMethod: #x) value: aPoint) equals: 10
 
 ]
 
-{ #category : #'tests-MethodsManagement' }
+{ #category : #'step09-tests-methods-management' }
 ObjTest >> testMethodManagmentNotUnderstandBadMethod [
 	"(self  selector: #testMethodManagmentNotUnderstandBadMethod) run"
 
-	self assert: (pointClass doesUnderstand: #xx) not.
+	self deny: (pointClass doesUnderstand: #xx)
 	
 ]
 
-{ #category : #'tests-MethodsManagement' }
+{ #category : #'step09-tests-methods-management' }
 ObjTest >> testMethodManagmentUnderstandGoodMethod [
 	"(self  selector: #testMethodManagmentUnderstandGoodMethod) run"
 
@@ -523,14 +530,14 @@ ObjTest >> testMethodManagmentUnderstandGoodMethod [
 
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodNotFoundRaiseError [
 	"(self  run: #testMethodNotFoundRaiseError)"
 
 	self should: [aPoint send: #zork withArguments: #()] raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodSelfSend [
 	"(self  selector: #testMethodSelfSend) run"
 
@@ -545,7 +552,7 @@ ObjTest >> testMethodSelfSend [
 	self assert: ((aPoint send: #getIV withArguments: #(#y)) = 22)
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testMethodSelfSendUnarySend [
 	"(self  selector: #testMethodSelfSendUnarySend) run"
 
@@ -556,7 +563,7 @@ ObjTest >> testMethodSelfSendUnarySend [
 
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodSuperCall [
 	"(self  selector: #testMethodSuperCall) run"
 
@@ -567,7 +574,7 @@ ObjTest >> testMethodSuperCall [
 	self assert: ((aColoredPoint send: #foo withArguments: #()) = 10).
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testMethodSuperCallOverBigHierarchy [
 	"(self  selector: #testMethodSuperCallOverBigHierarchy) run"
 
@@ -595,14 +602,14 @@ ObjTest >> testMethodWithHeaderAndBody [
 	"this anonymous method is defined in pointClass so its superclass pointer is objectClass"
 	self assert: ((pointClass 
 					methodWithHeader: ''
-					andBody: ' superClassOfClassDefiningTheMethod ') value: aPoint) = objectClass .
+					andBody: ' superclassOfClassDefiningTheMethod ') value: aPoint) = objectClass .
 
 	self assert: ((coloredPointClass 
 					methodWithHeader: ''
-					andBody: ' superClassOfClassDefiningTheMethod ') value: aPoint) = pointClass .
+					andBody: ' superclassOfClassDefiningTheMethod ') value: aPoint) = pointClass .
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testNilWhenErrorInLookup [
 	"(self  selector: #testNilWhenErrorInLookup) run"
 	
@@ -611,7 +618,7 @@ ObjTest >> testNilWhenErrorInLookup [
 	
 ]
 
-{ #category : #tests }
+{ #category : #'step11-tests-extra-message-passing' }
 ObjTest >> testPrimitiveStructure [
 	"(self selector: #testPrimitiveStructure) run"
 	
@@ -623,46 +630,46 @@ ObjTest >> testPrimitiveStructure [
 	self assert: ((pointClass objMethodDict) = nil) not
 ]
 
-{ #category : #'step1-tests-structure of objects' }
+{ #category : #'step01-tests-structure of objects' }
 ObjTest >> testPrimitiveStructureObjClassId [
 	"(self selector: #testPrimitiveStructureObjClassId) run"
-	
-	self assert: (pointClass objClassId = #ObjClass).
+
+	self assert: pointClass objClassId equals: #ObjClass
 
 ]
 
-{ #category : #'step1-tests-structure of objects' }
+{ #category : #'step01-tests-structure of objects' }
 ObjTest >> testPrimitiveStructureObjClassIdForSimpleObject [
 	"self run: #testPrimitiveStructureObjClassIdForSimpleObject"
 
-	self assert: (aPoint objClassId = #ObjPoint).
+	self assert: aPoint objClassId equals: #ObjPoint
 
 ]
 
-{ #category : #'step2-tests-structure of classes' }
+{ #category : #'step02-tests-structure of classes' }
 ObjTest >> testPrimitiveStructureObjIVs [
 	"(self selector: #testPrimitiveStructureObjIVs) run"
 
-	self assert: ((pointClass objIVs) = #(#class #x #y)).
+	self assert: pointClass objIVs equals: #(#class #x #y)
 
 ]
 
-{ #category : #'step2-tests-structure of classes' }
+{ #category : #'step02-tests-structure of classes' }
 ObjTest >> testPrimitiveStructureObjKeywords [
 	"(self selector: #testPrimitiveStructureObjKeywords) run"
 
-	self assert: ((pointClass objKeywords) = #(#x: #y:)).
+	self assert: pointClass objKeywords equals: #(#x: #y:)
 
 ]
 
-{ #category : #'step2-tests-structure of classes' }
+{ #category : #'step02-tests-structure of classes' }
 ObjTest >> testPrimitiveStructureObjMethodDict [
 	"(self selector: #testPrimitiveStructureObjMethodDict) run"
 
 	self assert: ((pointClass objMethodDict) = nil) not
 ]
 
-{ #category : #'step2-tests-structure of classes' }
+{ #category : #'step02-tests-structure of classes' }
 ObjTest >> testPrimitiveStructureObjName [
 	"(self selector: #testPrimitiveStructureObjName) run"
 
@@ -670,7 +677,7 @@ ObjTest >> testPrimitiveStructureObjName [
 	
 ]
 
-{ #category : #'step2-tests-structure of classes' }
+{ #category : #'step02-tests-structure of classes' }
 ObjTest >> testPrimitiveStructureObjSuperclassId [
 	"(self selector: #testPrimitiveStructureObjSuperclassId) run"
 
@@ -678,7 +685,7 @@ ObjTest >> testPrimitiveStructureObjSuperclassId [
 
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testRaisesErrorSendWhenErrorInLookup [
 	"(self  selector: #testRaisesErrorSendWhenErrorInLookup) run"
 
@@ -686,7 +693,7 @@ ObjTest >> testRaisesErrorSendWhenErrorInLookup [
 	"Open a Transcript to see the message trace"
 ]
 
-{ #category : #'tests-MessagePassingsAndDynamicsLookup' }
+{ #category : #'step10-tests-message-passing' }
 ObjTest >> testSendErrorRaisesErrorSendWhenErrorInLookup [
 	"(self  selector: #testSendErrorRaisesErrorSendWhenErrorInLookup) run"
 	
